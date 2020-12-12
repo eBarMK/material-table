@@ -85,8 +85,6 @@ export class MTableToolbar extends React.Component {
         const doc = new jsPDF(orientation, unit, size);
 
         const tableTitle = window.document.getElementById("table-title");
-        tableTitle.style.padding= "8px";
-        tableTitle.style.margin= "0";
 
         var content = {
             // didDrawPage: function(data) {

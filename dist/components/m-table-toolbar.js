@@ -129,8 +129,6 @@ var MTableToolbar = /*#__PURE__*/function (_React$Component) {
         var doc = new jsPDF(orientation, unit, size);
 
         var tableTitle = window.document.getElementById("table-title");
-        tableTitle.style.padding= "8px";
-        tableTitle.style.margin= "0";
 
         var content = {
             // didDrawPage: function(data) {
