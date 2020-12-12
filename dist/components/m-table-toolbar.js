@@ -123,39 +123,57 @@ var MTableToolbar = /*#__PURE__*/function (_React$Component) {
             columns = _this$getTableData4[0],
             data = _this$getTableData4[1];
 
-        var content = {
-          startY: 50,
-          head: [columns.map(function (columnDef) {
-            return columnDef.title;
-          })],
-          body: data
-        };
         var unit = "pt";
         var size = "A4";
-        var orientation = "portrait";
+        var orientation = _this.props.exportOrientation ? _this.props.exportOrientation : "portrait";;
         var doc = new jsPDF(orientation, unit, size);
 
+        var tableTitle = window.document.getElementById("table-title");
+        tableTitle.style.padding= "8px";
+        tableTitle.style.margin= "0";
+
+        var content = {
+            // didDrawPage: function(data) {
+            //     // Header
+            //     doc.setFontSize(_this.props.exportFontSize);
+            //     if(_this.props.exportFontName) doc.setFont(_this.props.exportFontName);
+            //     doc.setTextColor(40);
+            //     doc.html(tableTitle);
+            // },
+            startY: tableTitle.offsetHeight+6,
+            head: [columns.map(function (columnDef) {
+                return columnDef.title;
+            })],
+            body: data,
+            margin: 10
+        };
+
         if (_this.props.exportFontName) {
-          var fontName = _this.props.exportFontName;
-          console.log("JsPdf export using custom font: ".concat(fontName));
+            var fontName = _this.props.exportFontName;
+            console.log("JsPdf export using custom font: ".concat(fontName));
 
-          for (var _i = 0, _Object$entries = Object.entries(_this.props.exportFontOptions || {}); _i < _Object$entries.length; _i++) {
-            var _Object$entries$_i = (0, _slicedToArray2["default"])(_Object$entries[_i], 2),
-                key = _Object$entries$_i[0],
-                value = _Object$entries$_i[1];
+            for (var _i = 0, _Object$entries = Object.entries(_this.props.exportFontOptions || {}); _i < _Object$entries.length; _i++) {
+                var _Object$entries$_i = (0, _slicedToArray2["default"])(_Object$entries[_i], 2),
+                    key = _Object$entries$_i[0],
+                    value = _Object$entries$_i[1];
 
-            content[key] = (0, _objectSpread2["default"])({}, {
-              font: fontName
-            }, value);
-          }
+                content[key] = (0, _objectSpread2["default"])({}, {
+                    font: fontName
+                }, value);
+            }
 
-          doc.setFont(fontName);
+            doc.setFont(fontName);
         }
 
-        doc.setFontSize(15);
-        doc.text(_this.props.exportFileName || _this.props.title, 40, 40);
+        doc.setFontSize(_this.props.exportFontSize);
+        // doc.setTextColor(40);
         doc.autoTable(content);
-        doc.save((_this.props.exportFileName || _this.props.title || "data") + ".pdf");
+
+        doc.html(tableTitle, {
+            callback: function (doc) {
+                doc.save((_this.props.exportFileName || _this.props.title || "data") + ".pdf");
+            }
+        });
       }
     });
     (0, _defineProperty2["default"])((0, _assertThisInitialized2["default"])(_this), "exportCsv", function () {
@@ -173,7 +191,6 @@ var MTableToolbar = /*#__PURE__*/function (_React$Component) {
       if (_this.props.exportPdf) {
         _this.props.exportPdf(_this.props.columns, _this.props.data);
       } else {
-        console.log(_this.props);
 
         _this.defaultExportPdf();
       }
@@ -430,6 +447,9 @@ MTableToolbar.propTypes = {
   })]),
   exportDelimiter: _propTypes["default"].string,
   exportFontName: _propTypes["default"].oneOfType([_propTypes["default"].string, _propTypes["default"].bool]),
+  exportFontSize: _propTypes["default"].number,
+  exportFontOptions: _propTypes["default"].object,
+  exportOrientation: _propTypes["default"].string,
   exportFileName: _propTypes["default"].oneOfType([_propTypes["default"].string, _propTypes["default"].func]),
   exportCsv: _propTypes["default"].func,
   exportPdf: _propTypes["default"].func,

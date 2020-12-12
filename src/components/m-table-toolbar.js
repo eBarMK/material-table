@@ -76,39 +76,53 @@ export class MTableToolbar extends React.Component {
 
   defaultExportPdf = () => {
     if (jsPDF !== null) {
-      const [columns, data] = this.getTableData();
+        const [columns, data] = this.getTableData();
 
-      
-      var content = {
-        startY: 10,
-        head: [columns.map(function (columnDef) {
-          return columnDef.title;
-        })],
-        body: data,
-        margin: 10,
-      };      
+        const unit = "pt";
+        const size = "A4";
+        const orientation = this.props.exportOrientation ? this.props.exportOrientation : "portrait";
 
-      const unit = "pt";
-      const size = "A4";
-      const orientation = this.props.exportOrientation  ? this.props.exportOrientation : "portrait";
+        const doc = new jsPDF(orientation, unit, size);
 
-      const doc = new jsPDF(orientation, unit, size);
-      if(this.props.exportFontName) {
-        let fontName = this.props.exportFontName
-        console.log(`jsPDF export using custom font: ${fontName}`);
+        const tableTitle = window.document.getElementById("table-title");
+        tableTitle.style.padding= "8px";
+        tableTitle.style.margin= "0";
 
-        for (const [key, value] of Object.entries(this.props.exportFontOptions || {})) {
-          content[key] = {...{ font: fontName }, ...value}
+        var content = {
+            // didDrawPage: function(data) {
+            //     // Header
+            //     doc.setFontSize(this.props.exportFontSize);
+            //     if(this.props.exportFontName) doc.setFont(this.props.exportFontName);
+            //     doc.setTextColor(40);
+            //     doc.html(tableTitle);
+            // },
+            startY: tableTitle.offsetHeight,
+            head: [columns.map(function (columnDef) {
+                return columnDef.title;
+            })],
+            body: data,
+            margin: 10,
+        };
+
+        if (this.props.exportFontName) {
+            let fontName = this.props.exportFontName
+            console.log(`jsPDF export using custom font: ${fontName}`);
+
+            for (const [key, value] of Object.entries(this.props.exportFontOptions || {})) {
+                content[key] = { ...{ font: fontName }, ...value }
+            }
+            doc.setFont(fontName);
         }
-        doc.setFont(fontName);
-      }
-      doc.setFontSize(this.props.exportFontSize);
-      console.log("export font size: "+this.props.exportFontSize)
-      doc.text(this.props.exportFileName || this.props.title, 40, 40);
-      doc.autoTable(content);
-      doc.save(
-        (this.props.exportFileName || this.props.title || "data") + ".pdf"
-      );
+        doc.setFontSize(this.props.exportFontSize);
+        // doc.setTextColor(40);
+        doc.autoTable(content);
+
+        doc.html(tableTitle, {
+            callback: function (doc) {
+                doc.save((this.props.exportFileName || this.props.title || "data") + ".pdf");
+            }
+        });
+      
     }
   };
 
@@ -125,7 +139,6 @@ export class MTableToolbar extends React.Component {
     if (this.props.exportPdf) {
       this.props.exportPdf(this.props.columns, this.props.data);
     } else {
-      console.log(this.props);
       this.defaultExportPdf();
     }
     this.setState({ exportButtonAnchorEl: null });
