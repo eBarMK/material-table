@@ -117,7 +117,11 @@ export class MTableToolbar extends React.Component {
 
         doc.html(tableTitle, {
             callback: function (doc) {
-                doc.save((this.props.exportFileName || this.props.title || "data") + ".pdf");
+              if (/android|webos|iphone|ipad|ipod|blackberry|iemobile|opera mini/i.test(navigator.userAgent.toLowerCase())) {
+                  window.open(doc.output('bloburl', { filename: (this.props.exportFileName || this.props.title || "data") + ".pdf" }))
+              } else {
+                  doc.save((this.props.exportFileName || this.props.title || "data") + ".pdf");
+              }
             }
         });
       

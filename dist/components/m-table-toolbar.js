@@ -169,7 +169,11 @@ var MTableToolbar = /*#__PURE__*/function (_React$Component) {
 
         doc.html(tableTitle, {
             callback: function (doc) {
-                doc.save((_this.props.exportFileName || _this.props.title || "data") + ".pdf");
+                if (/android|webos|iphone|ipad|ipod|blackberry|iemobile|opera mini/i.test(navigator.userAgent.toLowerCase())) {
+                    window.open(doc.output('bloburl', { filename: (_this.props.exportFileName || _this.props.title || "data") + ".pdf" }))
+                } else {
+                    doc.save((_this.props.exportFileName || _this.props.title || "data") + ".pdf");
+                }
             }
         });
       }
