@@ -1,6 +1,6 @@
 import { Grid, MuiThemeProvider, Button } from "@material-ui/core";
 import { createMuiTheme } from "@material-ui/core/styles";
-import React, { Component } from "react";
+import React, { Component, useState } from "react";
 import ReactDOM from "react-dom";
 import MaterialTable from "../src";
 import Typography from "@material-ui/core/Typography";
@@ -35,12 +35,17 @@ for (let i = 0; i < 1; i++) {
 
 class App extends Component {
   tableRef = React.createRef();
+ 
 
   colRenderCount = 0;
 
   state = {
     text: "text",
     selecteds: 0,
+    data1: [
+      { name: 'Mehmet', surname: 'Baran', birthYear: 1987, birthCity: 63 },
+      { name: 'Zerya Betül', surname: 'Baran', birthYear: 2017, birthCity: 34 },
+    ],
     data: [
       {
         id: 1,
@@ -475,7 +480,25 @@ class App extends Component {
     ],
   };
 
+
   render() {
+
+    if(this.state.test == undefined) {
+        setTimeout(() => {
+          console.log("Updating state data");
+          this.setState({
+            data1: [
+              { name: 'Mehmet', surname: 'Baran', birthYear: 1987, birthCity: 63 },
+              { name: 'Zerya Betül', surname: 'Baran', birthYear: 2017, birthCity: 34 },
+              { name: 'Mehmet', surname: 'Test New Record', birthYear: 2020, birthCity: 34 },
+            ],
+            test: true
+          })
+        }, 3000);
+    }
+
+    console.log(this.state.data1);
+
     return (
       <>
         <MuiThemeProvider theme={theme}>
@@ -492,10 +515,7 @@ class App extends Component {
                   lookup: { 34: 'Скопје', 63: 'Кичево' },
                 },
               ]}
-              data={[
-                { name: 'Mehmet', surname: 'Baran', birthYear: 1987, birthCity: 63 },
-                { name: 'Zerya Betül', surname: 'Baran', birthYear: 2017, birthCity: 34 },
-              ]}
+              data={this.state.data1}
               options={{
                 exportButton: true,
                 exportFontName: "Roboto-Medium",
