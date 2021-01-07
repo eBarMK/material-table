@@ -128,24 +128,50 @@ var MTableToolbar = /*#__PURE__*/function (_React$Component) {
 				var orientation = _this.props.exportOrientation ? _this.props.exportOrientation : "portrait";;
 				var doc = new jsPDF(orientation, unit, size);
 
-				var tableTitle = window.document.getElementById("table-title");
+				var tableTitle;
+				var tableTitle0 = window.document.getElementById("table-title");
 				var tableTitle1 = window.document.getElementById("table-title1");
+				var tableFooter = window.document.getElementById("table-footer");
+				var margin = 10;
+
+				if (tableTitle1 || tableTitle0) tableTitle = tableTitle1 ? tableTitle1 : tableTitle0;
+
+				var localization = (0, _objectSpread2["default"])({}, MTableToolbar.defaultProps.localization, this.props.localization);
 
 				var content = {
 					// didDrawPage: function(data) {
 					//     // Header
-					//     doc.setFontSize(_this.props.exportFontSize);
-					//     if(_this.props.exportFontName) doc.setFont(_this.props.exportFontName);
-					//     doc.setTextColor(40);
-					//     doc.html(tableTitle);
+					//     // doc.setFontSize(_this.props.exportFontSize);
+					//     // if(_this.props.exportFontName) doc.setFont(_this.props.exportFontName);
+					//     // doc.setTextColor(40);
+					//     // doc.html(tableTitle);
+
+					//     // Footer
+					//     var str = "Page " + doc.internal.getNumberOfPages();
+					//     // Total page number plugin only available in jspdf v1.0+
+					//     if (typeof doc.putTotalPages === 'function') {
+					//         str = str + " of " + totalPagesExp;
+					//     }
+					//     doc.setFontSize(10);
+
+					//     // jsPDF 1.4+ uses getWidth, <1.4 uses .width
+					//     var pageSize = doc.internal.pageSize;
+					//     var pageHeight = pageSize.height ? pageSize.height : pageSize.getHeight();
+					//     doc.text(str, data.settings.margin.left, pageHeight - 10);
 					// },
-					startY: tableTitle1 ? tableTitle1.offsetHeight + 32 : (tableTitle ? tableTitle.offsetHeight + 16 : 16),
+					startY: tableTitle1 ? tableTitle1.offsetHeight + 32 : (tableTitle0 ? tableTitle0.offsetHeight + 16 : 16),
 					head: [columns.map(function (columnDef) {
 						return columnDef.title;
 					})],
 					body: data,
-					margin: 10
+					margin: margin,
+					pagesplit: true,
 				};
+
+				// Total page number plugin only available in jspdf v1.0+
+				// if (typeof doc.putTotalPages === 'function') {
+				//     doc.putTotalPages(totalPagesExp);
+				// }
 
 				if (_this.props.exportFontName) {
 					var fontName = _this.props.exportFontName;
@@ -167,39 +193,53 @@ var MTableToolbar = /*#__PURE__*/function (_React$Component) {
 				doc.setFontSize(_this.props.exportFontSize);
 				// doc.setTextColor(40);
 				doc.autoTable(content);
+				var finalY = doc.lastAutoTable.finalY;
+				console.log(finalY);
 
-				if (tableTitle1) {
-					doc.html(tableTitle1, {
-						callback: function (doc) {
+				const addFooters = (doc, finalY) => {
+					if (finalY >= 796) {
+						doc.addPage();
+					}
+					var pageCount = doc.internal.getNumberOfPages();
 
-							if (/android|webos|iphone|ipad|ipod|blackberry|iemobile|opera mini/i.test(navigator.userAgent.toLowerCase())) {
-								window.open(doc.output('bloburl', { filename: (_this.props.exportFileName || _this.props.title || "data") + ".pdf" }))
-							} else {
-								doc.save((_this.props.exportFileName || _this.props.title || "data") + ".pdf");
-							}
+					for (var i = 1; i <= pageCount; i++) {
+
+						doc.setPage(i);
+
+						var pageSize = doc.internal.pageSize;
+						var pageHeight = pageSize.height ? pageSize.height : pageSize.getHeight();
+						var pageWidth = pageSize.width ? pageSize.width : pageSize.getWidth();
+						doc.text(localization.page + ' ' + String(i) + ' ' + localization.of + ' ' + String(pageCount), margin, pageHeight - 10)
+
+						if (i === pageCount && tableFooter) {
+							doc.setLineWidth(0.4);
+							doc.line(50, pageHeight - 35, 280, pageHeight - 35);
+							doc.text(localization.seal, pageWidth / 4, pageHeight - 20);
+							doc.setLineWidth(0.5);
+							doc.line(330, pageHeight - 35, 560, pageHeight - 35);
+							doc.text(localization.authorized_person_signature, 2.6 * pageWidth / 4, pageHeight - 20);
 						}
-					});
+					}
 				}
-				else if (tableTitle) {
-					doc.html(tableTitle, {
-						callback: function (doc) {
 
-							if (/android|webos|iphone|ipad|ipod|blackberry|iemobile|opera mini/i.test(navigator.userAgent.toLowerCase())) {
-								window.open(doc.output('bloburl', { filename: (_this.props.exportFileName || _this.props.title || "data") + ".pdf" }))
-							} else {
-								doc.save((_this.props.exportFileName || _this.props.title || "data") + ".pdf");
-							}
-						}
-					});
-				}
-				else {
+				addFooters(doc, finalY);
 
+				const saveDoc = (doc) => {
 					if (/android|webos|iphone|ipad|ipod|blackberry|iemobile|opera mini/i.test(navigator.userAgent.toLowerCase())) {
 						window.open(doc.output('bloburl', { filename: (_this.props.exportFileName || _this.props.title || "data") + ".pdf" }))
 					} else {
 						doc.save((_this.props.exportFileName || _this.props.title || "data") + ".pdf");
 					}
 				}
+
+				if (tableTitle1 || tableTitle0) {
+					doc.html(tableTitle, {
+						callback: function (doc) {
+							saveDoc(doc)
+						}
+					});
+				}
+				else saveDoc(doc);
 			}
 		});
 		(0, _defineProperty2["default"])((0, _assertThisInitialized2["default"])(_this), "exportCsv", function () {

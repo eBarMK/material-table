@@ -84,23 +84,26 @@ export class MTableToolbar extends React.Component {
 
 			const doc = new jsPDF(orientation, unit, size);
 
-			const tableTitle = window.document.getElementById("table-title");
+			const tableTitle;
+			const tableTitle0 = window.document.getElementById("table-title");
 			const tableTitle1 = window.document.getElementById("table-title");
+			const tableFooter = window.document.getElementById("table-footer");
+			const margin = 10;
+
+			if(tableTitle1 || tableTitle0) tableTitle = tableTitle1 ? tableTitle1 : tableTitle0;
+
+			const localization = {
+				...MTableToolbar.defaultProps.localization,
+				...this.props.localization,
+			};
 
 			var content = {
-				// didDrawPage: function(data) {
-				//     // Header
-				//     doc.setFontSize(this.props.exportFontSize);
-				//     if(this.props.exportFontName) doc.setFont(this.props.exportFontName);
-				//     doc.setTextColor(40);
-				//     doc.html(tableTitle);
-				// },
-				startY: tableTitle1 ? tableTitle1.offsetHeight + 32 : (tableTitle ? tableTitle.offsetHeight + 16 : 16),
+				startY: tableTitle1 ? tableTitle1.offsetHeight+32 : (tableTitle ? tableTitle.offsetHeight+16 : 16),
 				head: [columns.map(function (columnDef) {
 					return columnDef.title;
 				})],
 				body: data,
-				margin: 10,
+				margin: margin,
 			};
 
 			if (this.props.exportFontName) {
@@ -115,39 +118,54 @@ export class MTableToolbar extends React.Component {
 			doc.setFontSize(this.props.exportFontSize);
 			// doc.setTextColor(40);
 			doc.autoTable(content);
+			const finalY = doc.lastAutoTable.finalY;
+			console.log(finalY);
 
-			if (tableTitle1) {
-				doc.html(tableTitle1, {
-					callback: function (doc) {
+			const addFooters = (doc, finalY) => {
+				if(finalY >= 796)
+				{
+					doc.addPage();
+				}
+				var pageCount = doc.internal.getNumberOfPages();
+			
+				for (var i = 1; i <= pageCount; i++) {
 
-						if (/android|webos|iphone|ipad|ipod|blackberry|iemobile|opera mini/i.test(navigator.userAgent.toLowerCase())) {
-							window.open(doc.output('bloburl', { filename: (this.props.exportFileName || this.props.title || "data") + ".pdf" }))
-						} else {
-							doc.save((this.props.exportFileName || this.props.title || "data") + ".pdf");
-						}
+					doc.setPage(i);
+
+					var pageSize = doc.internal.pageSize;
+					var pageHeight = pageSize.height ? pageSize.height : pageSize.getHeight();
+					var pageWidth = pageSize.width ? pageSize.width : pageSize.getWidth();
+					doc.text(localization.page + ' ' + String(i) + ' ' + localization.of + ' ' + String(pageCount), margin, pageHeight - 10)
+
+					if(i === pageCount && tableFooter)
+					{
+						doc.setLineWidth(0.4);
+						doc.line(50, pageHeight - 35, 280, pageHeight - 35);
+						doc.text(localization.seal, pageWidth / 4, pageHeight - 20);
+						doc.setLineWidth(0.5);
+						doc.line(330, pageHeight - 35, 560, pageHeight - 35);
+						doc.text(localization.authorized_person_signature, 2.6 * pageWidth / 4, pageHeight - 20);
 					}
-				});
+				}
 			}
-			else if (tableTitle) {
-				doc.html(tableTitle, {
-					callback: function (doc) {
 
-						if (/android|webos|iphone|ipad|ipod|blackberry|iemobile|opera mini/i.test(navigator.userAgent.toLowerCase())) {
-							window.open(doc.output('bloburl', { filename: (this.props.exportFileName || this.props.title || "data") + ".pdf" }))
-						} else {
-							doc.save((this.props.exportFileName || this.props.title || "data") + ".pdf");
-						}
-					}
-				});
-			}
-			else {
+			addFooters(doc, finalY);
 
+			const saveDoc = (doc) => {
 				if (/android|webos|iphone|ipad|ipod|blackberry|iemobile|opera mini/i.test(navigator.userAgent.toLowerCase())) {
 					window.open(doc.output('bloburl', { filename: (this.props.exportFileName || this.props.title || "data") + ".pdf" }))
 				} else {
 					doc.save((this.props.exportFileName || this.props.title || "data") + ".pdf");
 				}
 			}
+
+			if(tableTitle1 || tableTitle0)
+			{
+				doc.html(tableTitle, { callback: function(doc) { 
+					saveDoc(doc) 
+				}});
+			} 
+			else saveDoc(doc);
 
 		}
 	};
