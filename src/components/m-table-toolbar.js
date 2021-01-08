@@ -164,10 +164,10 @@ export class MTableToolbar extends React.Component {
 			if (tableTitle1 || tableTitle0) {
 				doc.html(tableTitle, {
 					callback: function (doc) {
-						saveDoc(doc)
+						saveDoc(doc);
+						tableTitle.style.fontSize = fontSize;
 					}
 				});
-				tableTitle.style.fontSize = fontSize;
 			}
 			else saveDoc(doc);
 

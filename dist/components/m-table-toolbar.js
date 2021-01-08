@@ -128,7 +128,7 @@ var MTableToolbar = /*#__PURE__*/function (_React$Component) {
 				var orientation = _this.props.exportOrientation ? _this.props.exportOrientation : "portrait";;
 				var doc = new jsPDF(orientation, unit, size);
 
-				var tableTitle;
+				var tableTitle, fontSize;
 				var tableTitle0 = window.document.getElementById("table-title");
 				var tableTitle1 = window.document.getElementById("table-title1");
 				var tableFooter = window.document.getElementById("table-footer");
@@ -136,7 +136,7 @@ var MTableToolbar = /*#__PURE__*/function (_React$Component) {
 
 				if (tableTitle1 || tableTitle0) {
 					tableTitle = tableTitle1 ? tableTitle1 : tableTitle0;
-					var fontSize = tableTitle.style.fontSize;
+					fontSize = tableTitle.style.fontSize;
 					tableTitle.style.fontSize = _this.props.exportFontSize + "pt";
 				}
 
@@ -239,10 +239,10 @@ var MTableToolbar = /*#__PURE__*/function (_React$Component) {
 				if (tableTitle1 || tableTitle0) {
 					doc.html(tableTitle, {
 						callback: function (doc) {
-							saveDoc(doc)
+							saveDoc(doc);
+							tableTitle.style.fontSize = fontSize;
 						}
 					});
-					tableTitle.style.fontSize = fontSize;
 				}
 				else saveDoc(doc);
 			}
