@@ -84,14 +84,17 @@ export class MTableToolbar extends React.Component {
 
 			const doc = new jsPDF(orientation, unit, size);
 
-			const tableTitle;
+			const tableTitle, fontSize;
 			const tableTitle0 = window.document.getElementById("table-title");
 			const tableTitle1 = window.document.getElementById("table-title");
 			const tableFooter = window.document.getElementById("table-footer");
 			const margin = 10;
 
-			if(tableTitle1 || tableTitle0) tableTitle = tableTitle1 ? tableTitle1 : tableTitle0;
-			tableTitle.style.fontSize = this.props.exportFontSize+"pt";
+			if(tableTitle1 || tableTitle0) {
+				tableTitle = tableTitle1 ? tableTitle1 : tableTitle0;
+				fontSize = tableTitle.style.fontSize;
+				tableTitle.style.fontSize = this.props.exportFontSize+"pt";
+			}
 
 			const localization = {
 				...MTableToolbar.defaultProps.localization,
@@ -99,7 +102,7 @@ export class MTableToolbar extends React.Component {
 			};
 
 			var content = {
-				startY: tableTitle1 ? tableTitle1.offsetHeight+32 : (tableTitle ? tableTitle.offsetHeight+16 : 16),
+				startY: tableTitle1 ? tableTitle1.offsetHeight + 32 : (tableTitle ? tableTitle.offsetHeight + 16 : 16),
 				head: [columns.map(function (columnDef) {
 					return columnDef.title;
 				})],
@@ -123,12 +126,11 @@ export class MTableToolbar extends React.Component {
 			console.log(finalY);
 
 			const addFooters = (doc, finalY) => {
-				if(finalY >= 796)
-				{
+				if (finalY >= 796) {
 					doc.addPage();
 				}
 				var pageCount = doc.internal.getNumberOfPages();
-			
+
 				for (var i = 1; i <= pageCount; i++) {
 
 					doc.setPage(i);
@@ -138,8 +140,7 @@ export class MTableToolbar extends React.Component {
 					var pageWidth = pageSize.width ? pageSize.width : pageSize.getWidth();
 					doc.text(localization.page + ' ' + String(i) + ' ' + localization.of + ' ' + String(pageCount), margin, pageHeight - 10)
 
-					if(i === pageCount && tableFooter)
-					{
+					if (i === pageCount && tableFooter) {
 						doc.setLineWidth(0.4);
 						doc.line(50, pageHeight - 35, 280, pageHeight - 35);
 						doc.text(localization.seal, pageWidth / 4, pageHeight - 20);
@@ -160,12 +161,14 @@ export class MTableToolbar extends React.Component {
 				}
 			}
 
-			if(tableTitle1 || tableTitle0)
-			{
-				doc.html(tableTitle, { callback: function(doc) { 
-					saveDoc(doc) 
-				}});
-			} 
+			if (tableTitle1 || tableTitle0) {
+				doc.html(tableTitle, {
+					callback: function (doc) {
+						saveDoc(doc)
+					}
+				});
+				tableTitle.style.fontSize = fontSize;
+			}
 			else saveDoc(doc);
 
 		}

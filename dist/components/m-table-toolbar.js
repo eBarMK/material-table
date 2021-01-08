@@ -134,8 +134,11 @@ var MTableToolbar = /*#__PURE__*/function (_React$Component) {
 				var tableFooter = window.document.getElementById("table-footer");
 				var margin = 10;
 
-				if (tableTitle1 || tableTitle0) tableTitle = tableTitle1 ? tableTitle1 : tableTitle0;
-				tableTitle.style.fontSize = _this.props.exportFontSize+"pt";
+				if (tableTitle1 || tableTitle0) {
+					tableTitle = tableTitle1 ? tableTitle1 : tableTitle0;
+					var fontSize = tableTitle.style.fontSize;
+					tableTitle.style.fontSize = _this.props.exportFontSize + "pt";
+				}
 
 				var localization = (0, _objectSpread2["default"])({}, MTableToolbar.defaultProps.localization, this.props.localization);
 
@@ -239,6 +242,7 @@ var MTableToolbar = /*#__PURE__*/function (_React$Component) {
 							saveDoc(doc)
 						}
 					});
+					tableTitle.style.fontSize = fontSize;
 				}
 				else saveDoc(doc);
 			}
