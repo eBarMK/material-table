@@ -91,6 +91,7 @@ export class MTableToolbar extends React.Component {
 			const margin = 10;
 
 			if(tableTitle1 || tableTitle0) tableTitle = tableTitle1 ? tableTitle1 : tableTitle0;
+			tableTitle.style.fontSize = this.props.exportFontSize+"pt";
 
 			const localization = {
 				...MTableToolbar.defaultProps.localization,

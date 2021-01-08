@@ -135,6 +135,7 @@ var MTableToolbar = /*#__PURE__*/function (_React$Component) {
 				var margin = 10;
 
 				if (tableTitle1 || tableTitle0) tableTitle = tableTitle1 ? tableTitle1 : tableTitle0;
+				tableTitle.style.fontSize = _this.props.exportFontSize+"pt";
 
 				var localization = (0, _objectSpread2["default"])({}, MTableToolbar.defaultProps.localization, this.props.localization);
 
