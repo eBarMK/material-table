@@ -305,7 +305,8 @@ var MTableHeader = /*#__PURE__*/function (_React$Component) {
           className: _this4.props.classes.header
         }));
       });
-      return /*#__PURE__*/React.createElement(_TableHead["default"], null, /*#__PURE__*/React.createElement(_TableRow["default"], null, headers));
+      // return /*#__PURE__*/React.createElement(_TableHead["default"], null, /*#__PURE__*/React.createElement(_TableRow["default"], null, headers));
+      return /*#__PURE__*/React.createElement(_TableRow["default"], null, headers);
     }
   }]);
   return MTableHeader;

@@ -343,9 +343,9 @@ export class MTableHeader extends React.Component {
       });
 
     return (
-      <TableHead>
+      // <TableHead>
         <TableRow>{headers}</TableRow>
-      </TableHead>
+      // </TableHead>
     );
   }
 }
