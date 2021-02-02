@@ -141,6 +141,36 @@ var MTableToolbar = /*#__PURE__*/function (_React$Component) {
 				}
 
 				var localization = (0, _objectSpread2["default"])({}, MTableToolbar.defaultProps.localization, this.props.localization);
+				var head = [];
+				if(window.columnParents && window.columnParents.length > 0)
+				{
+					if(window.columnNumbers && window.columnNumbers.length > 0)
+					{
+						head = [
+							[...window.columnParents],
+							columns.map(function (columnDef) {
+								return columnDef.title;
+							}),
+							[...window.columnNumbers],
+						];
+					}
+					else {
+						head = [
+							[...window.columnParents],
+							columns.map(function (columnDef) {
+								return columnDef.title;
+							}),
+							[...window.columnNumbers],
+						];
+					}
+				}
+				else {
+					head = [
+						columns.map(function (columnDef) {
+							return columnDef.title;
+						}),
+					];
+				}
 
 				var content = {
 					// didDrawPage: function(data) {
@@ -164,9 +194,7 @@ var MTableToolbar = /*#__PURE__*/function (_React$Component) {
 					//     doc.text(str, data.settings.margin.left, pageHeight - 10);
 					// },
 					startY: tableTitle1 ? tableTitle1.offsetHeight + 32 : (tableTitle0 ? tableTitle0.offsetHeight + 16 : 16),
-					head: [columns.map(function (columnDef) {
-						return columnDef.title;
-					})],
+					head: head,
 					body: data,
 					margin: margin,
 					pagesplit: true,

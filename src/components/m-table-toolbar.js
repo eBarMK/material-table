@@ -101,11 +101,40 @@ export class MTableToolbar extends React.Component {
 				...this.props.localization,
 			};
 
+			const head = [];
+			if(window.columnParents && window.columnParents.length > 0)
+			{
+				if(window.columnNumbers && window.columnNumbers.length > 0)
+				{
+					head = [
+						[...window.columnParents],
+						columns.map(function (columnDef) {
+							return columnDef.title;
+						}),
+						[...window.columnNumbers],
+					];
+				}
+				else {
+					head = [
+						[...window.columnParents],
+						columns.map(function (columnDef) {
+							return columnDef.title;
+						}),
+						[...window.columnNumbers],
+					];
+				}
+			}
+			else {
+				head = [
+					columns.map(function (columnDef) {
+						return columnDef.title;
+					}),
+				];
+			}
+
 			var content = {
 				startY: tableTitle1 ? tableTitle1.offsetHeight + 32 : (tableTitle ? tableTitle.offsetHeight + 16 : 16),
-				head: [columns.map(function (columnDef) {
-					return columnDef.title;
-				})],
+				head: head,
 				body: data,
 				margin: margin,
 			};
