@@ -160,7 +160,6 @@ var MTableToolbar = /*#__PURE__*/function (_React$Component) {
 							columns.map(function (columnDef) {
 								return columnDef.title;
 							}),
-							[...window.columnNumbers],
 						];
 					}
 				}

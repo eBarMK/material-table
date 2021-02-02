@@ -120,7 +120,6 @@ export class MTableToolbar extends React.Component {
 						columns.map(function (columnDef) {
 							return columnDef.title;
 						}),
-						[...window.columnNumbers],
 					];
 				}
 			}
