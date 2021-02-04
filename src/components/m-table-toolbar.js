@@ -168,13 +168,26 @@ export class MTableToolbar extends React.Component {
 					var pageWidth = pageSize.width ? pageSize.width : pageSize.getWidth();
 					doc.text(localization.page + ' ' + String(i) + ' ' + localization.of + ' ' + String(pageCount), margin, pageHeight - 10)
 
-					if (i === pageCount && tableFooter) {
-						doc.setLineWidth(0.4);
-						doc.line(50, pageHeight - 35, 280, pageHeight - 35);
-						doc.text(localization.seal, pageWidth / 4, pageHeight - 20);
-						doc.setLineWidth(0.5);
-						doc.line(330, pageHeight - 35, 560, pageHeight - 35);
-						doc.text(localization.authorized_person_signature, 2.6 * pageWidth / 4, pageHeight - 20);
+					if(i === pageCount && tableFooter)
+					{
+						let constWidth = 222.64;
+						if(orientation === "portrait")
+						{
+							doc.setLineWidth(0.4);
+							doc.line(50, pageHeight - 35, constWidth + 50, pageHeight - 35);
+							doc.text(localization.seal, pageWidth / 4, pageHeight - 20);
+							doc.setLineWidth(0.5);
+							doc.line(constWidth + 100, pageHeight - 35, pageWidth - 50, pageHeight - 35);
+							doc.text(localization.authorized_person_signature, 0.6625 * pageWidth, pageHeight - 20);
+						}
+						else {
+							doc.setLineWidth(0.4);
+							doc.line(50, pageHeight - 35, constWidth + 50, pageHeight - 35);
+							doc.text(localization.seal, 0.1768 * pageWidth , pageHeight - 20);
+							doc.setLineWidth(0.5);
+							doc.line(0.6714 * pageWidth, pageHeight - 35, pageWidth - 50, pageHeight - 35);
+							doc.text(localization.authorized_person_signature, 0.7566 * pageWidth, pageHeight - 20);
+						}
 					}
 				}
 			}
