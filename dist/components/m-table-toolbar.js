@@ -128,16 +128,21 @@ var MTableToolbar = /*#__PURE__*/function (_React$Component) {
 				var orientation = _this.props.exportOrientation ? _this.props.exportOrientation : "portrait";;
 				var doc = new jsPDF(orientation, unit, size);
 
-				var tableTitle, fontSize;
+				var tableTitle, fontSize, marginLeft, marginTop;
 				var tableTitle0 = window.document.getElementById("table-title");
 				var tableTitle1 = window.document.getElementById("table-title1");
 				var tableFooter = window.document.getElementById("table-footer");
 				var margin = 10;
+				var marginBottom = 25;
 
 				if (tableTitle1 || tableTitle0) {
 					tableTitle = tableTitle1 ? tableTitle1 : tableTitle0;
 					fontSize = tableTitle.style.fontSize;
+					marginLeft = tableTitle.style.marginLeft;
+					marginTop = tableTitle.style.marginTop;
 					tableTitle.style.fontSize = _this.props.exportFontSize + "pt";
+					tableTitle.style.marginLeft = margin+'px';
+					tableTitle.style.marginTop = margin+'px';
 				}
 
 				var localization = (0, _objectSpread2["default"])({}, MTableToolbar.defaultProps.localization, this.props.localization);
@@ -172,30 +177,10 @@ var MTableToolbar = /*#__PURE__*/function (_React$Component) {
 				}
 
 				var content = {
-					// didDrawPage: function(data) {
-					//     // Header
-					//     // doc.setFontSize(_this.props.exportFontSize);
-					//     // if(_this.props.exportFontName) doc.setFont(_this.props.exportFontName);
-					//     // doc.setTextColor(40);
-					//     // doc.html(tableTitle);
-
-					//     // Footer
-					//     var str = "Page " + doc.internal.getNumberOfPages();
-					//     // Total page number plugin only available in jspdf v1.0+
-					//     if (typeof doc.putTotalPages === 'function') {
-					//         str = str + " of " + totalPagesExp;
-					//     }
-					//     doc.setFontSize(10);
-
-					//     // jsPDF 1.4+ uses getWidth, <1.4 uses .width
-					//     var pageSize = doc.internal.pageSize;
-					//     var pageHeight = pageSize.height ? pageSize.height : pageSize.getHeight();
-					//     doc.text(str, data.settings.margin.left, pageHeight - 10);
-					// },
-					startY: tableTitle1 ? tableTitle1.offsetHeight + 32 : (tableTitle0 ? tableTitle0.offsetHeight + 16 : 16),
+					startY: tableTitle1 ? tableTitle1.offsetHeight + 26 : (tableTitle0 ? tableTitle0.offsetHeight + 16 : 16),
 					head: head,
 					body: data,
-					margin: margin,
+					margin: { top: margin, left: margin, right: margin, bottom: marginBottom },
 					pagesplit: true,
 				};
 
@@ -281,6 +266,8 @@ var MTableToolbar = /*#__PURE__*/function (_React$Component) {
 						callback: function (doc) {
 							saveDoc(doc);
 							tableTitle.style.fontSize = fontSize;
+                        	tableTitle.style.marginLeft = marginLeft;
+                        	tableTitle.style.marginTop = marginTop;
 						}
 					});
 				}

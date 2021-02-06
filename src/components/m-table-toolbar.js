@@ -84,16 +84,21 @@ export class MTableToolbar extends React.Component {
 
 			const doc = new jsPDF(orientation, unit, size);
 
-			const tableTitle, fontSize;
+			const tableTitle, fontSize, marginLeft, marginTop;
 			const tableTitle0 = window.document.getElementById("table-title");
 			const tableTitle1 = window.document.getElementById("table-title");
 			const tableFooter = window.document.getElementById("table-footer");
 			const margin = 10;
+			const marginBottom = 25;
 
-			if(tableTitle1 || tableTitle0) {
+			if (tableTitle1 || tableTitle0) {
 				tableTitle = tableTitle1 ? tableTitle1 : tableTitle0;
 				fontSize = tableTitle.style.fontSize;
-				tableTitle.style.fontSize = this.props.exportFontSize+"pt";
+                marginLeft = tableTitle.style.marginLeft;
+                marginTop = tableTitle.style.marginTop;
+				tableTitle.style.fontSize = this.props.exportFontSize + "pt";
+                tableTitle.style.marginLeft = margin+'px';
+                tableTitle.style.marginTop = margin+'px';
 			}
 
 			const localization = {
@@ -132,10 +137,11 @@ export class MTableToolbar extends React.Component {
 			}
 
 			var content = {
-				startY: tableTitle1 ? tableTitle1.offsetHeight + 32 : (tableTitle ? tableTitle.offsetHeight + 16 : 16),
+				startY: tableTitle1 ? tableTitle1.offsetHeight + 26 : (tableTitle0 ? tableTitle0.offsetHeight + 16 : 16),
 				head: head,
 				body: data,
-				margin: margin,
+				margin: { top: margin, left: margin, right: margin, bottom: marginBottom },
+				pagesplit: true,
 			};
 
 			if (this.props.exportFontName) {
@@ -207,6 +213,8 @@ export class MTableToolbar extends React.Component {
 					callback: function (doc) {
 						saveDoc(doc);
 						tableTitle.style.fontSize = fontSize;
+                        tableTitle.style.marginLeft = marginLeft;
+                        tableTitle.style.marginTop = marginTop;
 					}
 				});
 			}
